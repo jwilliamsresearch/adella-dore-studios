@@ -1,0 +1,19 @@
+{
+  "name": "adella-dore-studios",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Adella Dore Studios \u2014 luxury wedding & event design studio, Manchester UK.",
+  "scripts": {
+    "images": "node scripts/optimize-images.mjs",
+    "dev": "vite",
+    "build": "npm run images && npm run xari && vite build",
+    "preview": "vite preview --port 4173",
+    "xari": "node scripts/build-xari-credit.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.62.1",
+    "sharp": "^0.33.5",
+    "vite": "^5.4.11"
+  }
+}

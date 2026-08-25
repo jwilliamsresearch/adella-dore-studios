@@ -1,0 +1,244 @@
+/* =========================================================================
+   Made by XARI — credit component
+   Self-contained, dependency-free, drops into any page.
+   Everything is driven by the custom properties in .xari-credit, so you can
+   restyle it for a host site without touching a rule below.
+   ========================================================================= */
+
+.xari-credit {
+  /* Light ground (default) */
+  --xari-fg: #111111;
+  --xari-muted: #6f6a63;
+  --xari-line: rgba(17, 17, 17, 0.16);
+  --xari-chip: transparent;
+  --xari-chip-hover: #111111;
+  --xari-chip-ink: #f7f6f4;
+  --xari-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.25rem;
+  color: var(--xari-muted);
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 999px;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.4s var(--xari-ease);
+}
+
+/* Dark ground — set data-xari-theme="dark" on the link, or let it follow the OS. */
+.xari-credit[data-xari-theme='dark'] {
+  --xari-fg: #f7f6f4;
+  --xari-muted: rgba(247, 246, 244, 0.58);
+  --xari-line: rgba(247, 246, 244, 0.22);
+  --xari-chip-hover: #f7f6f4;
+  --xari-chip-ink: #111111;
+}
+
+@media (prefers-color-scheme: dark) {
+  .xari-credit[data-xari-theme='auto'] {
+    --xari-fg: #f7f6f4;
+    --xari-muted: rgba(247, 246, 244, 0.58);
+    --xari-line: rgba(247, 246, 244, 0.22);
+    --xari-chip-hover: #f7f6f4;
+    --xari-chip-ink: #111111;
+  }
+}
+
+.xari-credit:hover,
+.xari-credit:focus-visible {
+  color: var(--xari-fg);
+}
+
+.xari-credit:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+/* ---------- The X mark ---------- */
+
+.xari-credit__mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--xari-line);
+  border-radius: 6px;
+  background: var(--xari-chip);
+  color: var(--xari-fg);
+  transition: background-color 0.5s var(--xari-ease), border-color 0.5s var(--xari-ease),
+    color 0.5s var(--xari-ease), transform 0.6s var(--xari-ease);
+}
+
+.xari-credit__mark svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  overflow: visible;
+}
+
+.xari-credit__mark path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  /* 20 comfortably exceeds each stroke's length, so the dash fully clears it. */
+  stroke-dasharray: 20;
+  stroke-dashoffset: 0;
+}
+
+.xari-credit:hover .xari-credit__mark,
+.xari-credit:focus-visible .xari-credit__mark {
+  background: var(--xari-chip-hover);
+  border-color: var(--xari-chip-hover);
+  color: var(--xari-chip-ink);
+  transform: rotate(90deg);
+}
+
+/* Redraw both strokes on hover — the mark signs itself. */
+.xari-credit:hover .xari-credit__mark path,
+.xari-credit:focus-visible .xari-credit__mark path {
+  animation: xari-draw 0.75s var(--xari-ease) both;
+}
+.xari-credit:hover .xari-credit__mark path:last-child,
+.xari-credit:focus-visible .xari-credit__mark path:last-child {
+  animation-delay: 0.12s;
+}
+
+@keyframes xari-draw {
+  from {
+    stroke-dashoffset: 20;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------- Wordmark ---------- */
+
+.xari-credit__text {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45em;
+  white-space: nowrap;
+}
+
+.xari-credit__pre {
+  font-size: 0.92em;
+}
+
+.xari-credit__word {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  color: var(--xari-fg);
+}
+
+/* A light sweeps across the letters on hover. */
+.xari-credit__word::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    color-mix(in srgb, var(--xari-fg) 55%, transparent) 50%,
+    transparent 80%
+  );
+  transform: translateX(-120%);
+  mix-blend-mode: plus-lighter;
+  pointer-events: none;
+}
+
+.xari-credit:hover .xari-credit__word::after,
+.xari-credit:focus-visible .xari-credit__word::after {
+  animation: xari-sweep 0.9s var(--xari-ease);
+}
+
+@keyframes xari-sweep {
+  to {
+    transform: translateX(120%);
+  }
+}
+
+/* ---------- Tagline + arrow ---------- */
+
+.xari-credit__sep {
+  width: 1.5rem;
+  height: 1px;
+  flex: none;
+  background: var(--xari-line);
+  transform: scaleX(0.55);
+  transform-origin: left;
+  transition: transform 0.55s var(--xari-ease), background-color 0.55s var(--xari-ease);
+}
+
+.xari-credit:hover .xari-credit__sep,
+.xari-credit:focus-visible .xari-credit__sep {
+  transform: scaleX(1);
+  background: currentColor;
+}
+
+.xari-credit__tag {
+  font-size: 0.92em;
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+  opacity: 0.75;
+  transition: opacity 0.45s var(--xari-ease);
+}
+
+.xari-credit:hover .xari-credit__tag,
+.xari-credit:focus-visible .xari-credit__tag {
+  opacity: 1;
+}
+
+.xari-credit__arrow {
+  width: 0.6rem;
+  height: 0.6rem;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition: opacity 0.45s var(--xari-ease), transform 0.45s var(--xari-ease);
+}
+
+.xari-credit:hover .xari-credit__arrow,
+.xari-credit:focus-visible .xari-credit__arrow {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 560px) {
+  .xari-credit {
+    gap: 0.6rem;
+    font-size: 0.68rem;
+  }
+  .xari-credit__sep,
+  .xari-credit__tag {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xari-credit *,
+  .xari-credit *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+  .xari-credit:hover .xari-credit__mark {
+    transform: none;
+  }
+}
