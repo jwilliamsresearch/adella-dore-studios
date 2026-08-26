@@ -1,9 +1,9 @@
 {
-  "name": "adella-dore-studios",
+  "name": "adell-adore-studios",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Adella Dore Studios \u2014 luxury wedding & event design studio, Manchester UK.",
+  "description": "Adell Adore Studios \u2014 luxury wedding & event design studio, Manchester UK.",
   "scripts": {
     "images": "node scripts/optimize-images.mjs",
     "dev": "vite",

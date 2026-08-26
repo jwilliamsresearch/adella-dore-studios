@@ -1,12 +1,12 @@
 /**
- * Content for the site. Everything here is drawn from Adella Dore Studios'
+ * Content for the site. Everything here is drawn from Adell Adore Studios'
  * own public posts on TikTok, Threads and Instagram — no invented claims.
  * Update `site.contact` once the studio confirms a public enquiry address.
  */
 
 export const site = {
-  name: 'Adella Dore Studios',
-  shortName: 'Adella Dore',
+  name: 'Adell Adore Studios',
+  shortName: 'Adell Adore',
   tagline: 'Crafting moments, creating memories',
   city: 'Manchester',
   region: 'Greater Manchester',
@@ -170,7 +170,7 @@ export const work = [
 
 export const faqs = [
   {
-    q: 'Where is Adella Dore Studios based?',
+    q: 'Where is Adell Adore Studios based?',
     a: 'We are based in Manchester and work across Greater Manchester and the North West. We also travel elsewhere in the UK for full-design weddings.',
   },
   {

@@ -1,4 +1,4 @@
-# Adella Dore Studios
+# Adell Adore Studios
 
 A one-page site for [@adelladorestudios](https://www.instagram.com/adelladorestudios/) —
 a wedding and event design studio in Manchester, UK.

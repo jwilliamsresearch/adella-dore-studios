@@ -11,7 +11,7 @@ const renderModule = pathToFileURL(resolve(root, 'src/render.js')).href;
  */
 function prerender() {
   return {
-    name: 'adella-prerender',
+    name: 'adell-adore-prerender',
     async transformIndexHtml(html) {
       // Import fresh each time so edits to data/render show up in dev.
       const mod = await import(/* @vite-ignore */ `${renderModule}?t=${Date.now()}`);

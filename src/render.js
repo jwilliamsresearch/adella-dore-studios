@@ -68,7 +68,7 @@ function header() {
   return `<header class="header" id="header">
     <div class="shell header__inner">
       <a class="brand" href="#top" aria-label="${esc(site.name)} — home">
-        <span class="brand__mark">Adella Dore</span>
+        <span class="brand__mark">Adell Adore</span>
         <span class="brand__sub">Studios</span>
       </a>
       <nav class="nav nav--desktop" aria-label="Primary">${nav}</nav>
@@ -156,7 +156,7 @@ function intro() {
       </div>
       <div class="intro__body" data-reveal style="--d:0.1s">
         <p class="lede">
-          Adella Dore Studios is a wedding and event design studio based in Manchester,
+          Adell Adore Studios is a wedding and event design studio based in Manchester,
           working across the North West and beyond.
         </p>
         <p>
@@ -275,7 +275,7 @@ function quoteBlock() {
       <blockquote>
         It was refreshing bringing this concept to life from inception to execution.
       </blockquote>
-      <figcaption>Adella Dore Studios &middot; Adanna &amp; Ryan, Manchester</figcaption>
+      <figcaption>Adell Adore Studios &middot; Adanna &amp; Ryan, Manchester</figcaption>
     </div>
   </section>`;
 }
@@ -361,7 +361,7 @@ function footer() {
     <div class="shell">
       <div class="footer__top">
         <div>
-          <div class="footer__brand">Adella Dore<br><span class="italic">Studios</span></div>
+          <div class="footer__brand">Adell Adore<br><span class="italic">Studios</span></div>
           <p class="footer__tag">${esc(site.tagline)} — wedding and event design in ${esc(site.city)}, ${esc(site.country)}.</p>
         </div>
         <div>
@@ -403,7 +403,7 @@ function jsonLd() {
       '@type': ['LocalBusiness', 'ProfessionalService'],
       '@id': `${site.url}/#studio`,
       name: site.name,
-      alternateName: 'Adella Dore',
+      alternateName: 'Adell Adore',
       slogan: site.tagline,
       description: `${site.name} is a wedding and event design studio in ${site.city}, ${site.country}, designing and styling weddings, baby showers, birthdays and private events from concept to execution.`,
       url: site.url,
@@ -479,7 +479,7 @@ function jsonLd() {
 
 export function renderHead() {
   const title = `${site.name} — Wedding & Event Design in ${site.city}`;
-  const desc = `Luxury wedding and event design studio in ${site.city}. Adella Dore Studios designs and styles weddings, baby showers, birthdays and private events from concept to execution. Crafting moments, creating memories.`;
+  const desc = `Luxury wedding and event design studio in ${site.city}. Adell Adore Studios designs and styles weddings, baby showers, birthdays and private events from concept to execution. Crafting moments, creating memories.`;
   const og = `${site.url}/media/og-cover.jpg`;
   const coverW = manifest[site.cover.img].widths.at(-1);
   const preloadHref = `/media/opt/${site.cover.img}-${coverW}.avif`;
