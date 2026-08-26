@@ -12,7 +12,7 @@ export const site = {
   region: 'Greater Manchester',
   country: 'United Kingdom',
   countryCode: 'GB',
-  url: 'https://www.adelladorestudios.com',
+  url: 'https://www.adelladorestudios.co.uk',
   handle: '@adelladorestudios',
   founded: '2022',
   // The hero photograph + social card. Swap for any key in media-manifest.json.
