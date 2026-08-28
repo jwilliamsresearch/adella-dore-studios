@@ -46,8 +46,9 @@ function logo(name, { alt, sizes, className = '', priority = false } = {}) {
   const srcset = (ext) => m.widths.map((w) => `/media/opt/${name}-${w}.${ext} ${w}w`).join(', ');
   const fallbackW = m.widths[m.widths.length - 1];
 
+  // WebP only — see the note in scripts/optimize-images.mjs on AVIF and the
+  // flat green field.
   return `<picture class="logo ${className}">
-          <source type="image/avif" srcset="${srcset('avif')}" sizes="${sizes}">
           <source type="image/webp" srcset="${srcset('webp')}" sizes="${sizes}">
           <img src="/media/opt/${name}-${fallbackW}.webp" width="${m.width}" height="${m.height}"
                alt="${esc(alt)}" sizes="${sizes}"

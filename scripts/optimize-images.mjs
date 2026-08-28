@@ -53,11 +53,15 @@ for (const file of files) {
 
   // Flat colour with hairline strokes needs more bits than a photograph
   // before the fine script starts to smear.
-  const q = isLogo ? { webp: 94, avif: 80 } : { webp: 78, avif: 55 };
+  const opts = isLogo ? { quality: 94 } : { quality: 78 };
 
   for (const w of widths) {
-    await image.clone().resize({ width: w }).webp({ quality: q.webp }).toFile(join(OUT, `${name}-${w}.webp`));
-    await image.clone().resize({ width: w }).avif({ quality: q.avif }).toFile(join(OUT, `${name}-${w}.avif`));
+    await image.clone().resize({ width: w }).webp(opts).toFile(join(OUT, `${name}-${w}.webp`));
+    // Logos ship as WebP only. AVIF's limited-range YUV lands the flat field a
+    // point off #4c6355 whatever the quality, and that one point is a visible
+    // seam against the navbar — for two-tone artwork it saves nothing anyway.
+    if (isLogo) continue;
+    await image.clone().resize({ width: w }).avif({ quality: 55 }).toFile(join(OUT, `${name}-${w}.avif`));
   }
 
   // Low-quality image placeholder, inlined so nothing ever flashes empty.
