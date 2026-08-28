@@ -7,20 +7,25 @@
    ========================================================================= */
 
 :root {
-  /* Ground */
-  --paper: #fbf7f1;
-  --paper-2: #f4ece1;
-  --sand: #e8dbc9;
-  --ink: #241c18;
-  --ink-2: #4a3d35;
-  --ink-3: #7d6c60;
+  /* Ground — cream paper over light beige, dark grey ink. */
+  --paper: #faf3e0;
+  --paper-2: #f2e8d2;
+  --sand: #e4d5c0;
+  --ink: #333333;
+  --ink-2: #5a5a58;
+  --ink-3: #86837c;
 
-  /* Accents */
-  --wine: #5e1d26;
-  --wine-deep: #3d1219;
-  --gilt: #b8863f;
-  --gilt-soft: #d9b477;
-  --sage: #7e8c6b;
+  /* Accents — the house green from the studio mark, mustard gilt, dusty pink. */
+  --green: #4c6355;
+  --green-deep: #3a4d42;
+  --green-soft: #b2c2a1;
+  --gilt: #d4af37;
+  --gilt-soft: #e2c66d;
+  --blush: #d8b4a0;
+  --sage: #b2c2a1;
+
+  /* On-green foreground, so the navbar and footer never guess at contrast. */
+  --on-green: #faf3e0;
 
   /* Type */
   --display: 'Cormorant Garamond', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
@@ -108,12 +113,12 @@ button {
 }
 
 ::selection {
-  background: var(--wine);
+  background: var(--green);
   color: var(--paper);
 }
 
 :focus-visible {
-  outline: 2px solid var(--wine);
+  outline: 2px solid var(--green);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -124,7 +129,7 @@ button {
   top: 0;
   z-index: 10000;
   padding: 0.9rem 1.4rem;
-  background: var(--wine);
+  background: var(--green);
   color: var(--paper);
   font-size: 0.85rem;
   letter-spacing: 0.1em;
@@ -250,7 +255,7 @@ section {
 
 .btn {
   --btn-fg: var(--paper);
-  --btn-bg: var(--wine);
+  --btn-bg: var(--green);
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -272,7 +277,7 @@ section {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: var(--wine-deep);
+  background: var(--green-deep);
   transform: translateY(101%);
   transition: transform 0.5s var(--ease);
 }
@@ -354,68 +359,45 @@ section {
   position: fixed;
   inset: 0 0 auto;
   z-index: 100;
+  /* The navbar carries the house green from the studio mark, so the logo
+     lockup sits on it seamlessly — no plate, no halo. */
+  background: var(--green);
+  color: var(--on-green);
   transition: transform 0.55s var(--ease), background-color 0.4s linear,
-    box-shadow 0.4s linear, backdrop-filter 0.4s linear;
+    box-shadow 0.4s linear, padding 0.4s var(--ease);
 }
 .header__inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  padding-block: clamp(1rem, 2vw, 1.6rem);
+  padding-block: clamp(0.5rem, 1.2vw, 0.9rem);
 }
+/* Scrolled: tightens up and gains an edge, but keeps the green. */
 .header.is-stuck {
-  background: color-mix(in srgb, var(--paper) 86%, transparent);
-  backdrop-filter: blur(14px) saturate(1.2);
-  box-shadow: 0 1px 0 var(--line);
+  box-shadow: 0 10px 30px -18px rgb(0 0 0 / 0.55), 0 1px 0 color-mix(in srgb, var(--on-green) 14%, transparent);
+}
+.header.is-stuck .header__inner {
+  padding-block: clamp(0.35rem, 0.8vw, 0.6rem);
 }
 .header.is-hidden {
   transform: translateY(-102%);
 }
 
-/* At the very top the header sits over the hero photograph, so it inverts.
-   `.is-stuck` (scrolled) and `.is-menu` (drawer open) both put it back on paper. */
-.header:not(.is-stuck):not(.is-menu) .brand {
-  color: #fff;
-}
-.header:not(.is-stuck):not(.is-menu) .brand__sub {
-  color: var(--gilt-soft);
-}
-.header:not(.is-stuck):not(.is-menu) .nav a {
-  color: color-mix(in srgb, #fff 82%, transparent);
-}
-.header:not(.is-stuck):not(.is-menu) .nav a:hover,
-.header:not(.is-stuck):not(.is-menu) .nav a[aria-current='true'] {
-  color: #fff;
-}
-.header:not(.is-stuck):not(.is-menu) .nav a::after {
-  background: var(--gilt-soft);
-}
-.header:not(.is-stuck):not(.is-menu) .burger {
-  border-color: color-mix(in srgb, #fff 42%, transparent);
-}
-.header:not(.is-stuck):not(.is-menu) .burger span {
-  background: #fff;
-}
-
+/* The lockup is artwork on the same green, trimmed at build time, so it
+   dissolves into the bar rather than sitting on a plate. */
 .brand {
-  display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
-  font-family: var(--display);
-  font-size: clamp(1.15rem, 1.7vw, 1.5rem);
-  letter-spacing: 0.02em;
-  white-space: nowrap;
+  display: block;
+  flex: 0 0 auto;
+  line-height: 0;
 }
-.brand__mark {
-  font-style: italic;
+.logo,
+.logo img {
+  display: block;
 }
-.brand__sub {
-  font-family: var(--sans);
-  font-size: 0.6rem;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: var(--gilt);
+.brand__logo img {
+  height: clamp(2.5rem, 4vw, 3.25rem);
+  width: auto;
 }
 
 .nav {
@@ -428,7 +410,7 @@ section {
   font-size: 0.74rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink-2);
+  color: color-mix(in srgb, var(--on-green) 78%, transparent);
   transition: color 0.3s;
 }
 .nav a::after {
@@ -438,14 +420,14 @@ section {
   bottom: -5px;
   width: 100%;
   height: 1px;
-  background: var(--wine);
+  background: var(--gilt);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.45s var(--ease);
 }
 .nav a:hover,
 .nav a[aria-current='true'] {
-  color: var(--ink);
+  color: var(--on-green);
 }
 .nav a:hover::after,
 .nav a[aria-current='true']::after {
@@ -456,6 +438,14 @@ section {
 .header__cta {
   padding: 0.75rem 1.4rem;
   font-size: 0.7rem;
+  --btn-bg: var(--gilt);
+  --btn-fg: #2e2410;
+}
+.header__cta::before {
+  background: var(--on-green);
+}
+.header__cta:hover {
+  --btn-fg: var(--green-deep);
 }
 
 .burger {
@@ -463,14 +453,15 @@ section {
   width: 2.75rem;
   height: 2.75rem;
   place-items: center;
-  border: 1px solid var(--line);
+  border: 1px solid color-mix(in srgb, var(--on-green) 38%, transparent);
   border-radius: 50%;
+  color: var(--on-green);
 }
 .burger span {
   display: block;
   width: 16px;
   height: 1px;
-  background: var(--ink);
+  background: currentColor;
   transition: transform 0.4s var(--ease), opacity 0.25s;
 }
 .burger span + span {
@@ -505,7 +496,8 @@ section {
   align-content: center;
   gap: 0.4rem;
   padding: var(--gutter);
-  background: var(--paper-2);
+  background: var(--green);
+  color: var(--on-green);
   clip-path: inset(0 0 100% 0);
   transition: clip-path 0.7s var(--ease);
   visibility: hidden;
@@ -538,6 +530,7 @@ section {
   font-size: 0.75rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  color: color-mix(in srgb, var(--on-green) 76%, transparent);
 }
 
 /* ---------- Media primitive ---------- */
@@ -559,7 +552,102 @@ section {
   opacity: 1;
 }
 
+/* The stacked studio mark sits on a green plate so it reads as a deliberate
+   panel on the cream page rather than a photograph that lost its background. */
+.intro__mark {
+  position: relative;
+  width: max-content;
+  margin-top: clamp(2.5rem, 4.5vw, 3.5rem);
+  padding: clamp(1.6rem, 3vw, 2.6rem) clamp(1.9rem, 3.5vw, 3rem);
+  /* The artwork is cream-on-green, so the plate has to be that same green —
+     any other fill would just show as a frame around a green rectangle. The
+     mustard rule, offset behind it, is what makes it read as a placed mark. */
+  background: var(--green);
+  border-radius: 3px;
+  box-shadow: 0 22px 45px -30px rgb(51 51 51 / 0.55);
+}
+.intro__mark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translate(0.7rem, 0.7rem);
+  border: 1px solid var(--gilt);
+  border-radius: 3px;
+  z-index: -1;
+}
+.intro__mark img {
+  width: clamp(9rem, 15vw, 13rem);
+  height: auto;
+}
+
 /* ---------- Hero ---------- */
+
+/* The cover set: every frame is stacked, only one is at full opacity.
+   Without JS the first slide simply stays where the server left it. */
+.hero__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.6s var(--ease);
+}
+.hero__slide.is-active {
+  opacity: 1;
+}
+.hero__slide .media {
+  position: absolute;
+  inset: -8% 0 0;
+  height: 116%;
+}
+.hero__slide .media img {
+  object-position: var(--cover-pos, 50% 45%);
+}
+/* A slow drift, run on every frame at once rather than per-activation, so
+   crossfading in or out never snaps the scale. */
+.hero__slide .media img {
+  animation: coverDrift 26s var(--ease) infinite alternate;
+}
+@keyframes coverDrift {
+  from {
+    transform: scale(1.005);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.hero__dots {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+.hero__dot {
+  padding: 0.45rem 0;
+  line-height: 0;
+}
+.hero__dot span {
+  display: block;
+  width: 2.25rem;
+  height: 2px;
+  background: color-mix(in srgb, #fff 34%, transparent);
+  transition: background-color 0.4s var(--ease), width 0.5s var(--ease);
+}
+.hero__dot:hover span {
+  background: color-mix(in srgb, #fff 66%, transparent);
+}
+.hero__dot.is-active span {
+  width: 3.5rem;
+  background: var(--gilt-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__slide {
+    transition: none;
+  }
+  .hero__slide .media img {
+    animation: none;
+  }
+}
+
 
 .hero {
   position: relative;
@@ -576,27 +664,19 @@ section {
   inset: 0;
   z-index: -2;
 }
-.hero__bg .media {
-  position: absolute;
-  inset: -8% 0 0;
-  height: 116%;
-}
-.hero__bg .media img {
-  object-position: var(--cover-pos, 50% 45%);
-}
 .hero__bg::after {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(
       180deg,
-      rgb(36 28 24 / 0.55) 0%,
-      rgb(36 28 24 / 0.28) 30%,
-      rgb(36 28 24 / 0.58) 68%,
-      rgb(36 28 24 / 0.86) 100%
+      rgb(26 34 29 / 0.52) 0%,
+      rgb(26 34 29 / 0.26) 30%,
+      rgb(26 34 29 / 0.58) 68%,
+      rgb(26 34 29 / 0.88) 100%
     ),
-    linear-gradient(100deg, rgb(36 28 24 / 0.55) 0%, rgb(36 28 24 / 0.12) 46%, transparent 68%),
-    radial-gradient(120% 80% at 20% 100%, rgb(61 18 25 / 0.5), transparent 62%);
+    linear-gradient(100deg, rgb(26 34 29 / 0.58) 0%, rgb(26 34 29 / 0.14) 46%, transparent 68%),
+    radial-gradient(120% 80% at 20% 100%, rgb(58 77 66 / 0.62), transparent 62%);
 }
 
 .hero__inner {
@@ -604,9 +684,6 @@ section {
   display: grid;
   gap: clamp(1.75rem, 4vw, 3rem);
   color: var(--paper);
-}
-.hero .eyebrow {
-  color: var(--gilt-soft);
 }
 
 .hero__title {
@@ -795,7 +872,7 @@ section {
   font-family: var(--display);
   font-size: clamp(2rem, 3.6vw, 2.9rem);
   line-height: 1;
-  color: var(--wine);
+  color: var(--green);
 }
 .stat__label {
   margin-top: 0.5rem;
@@ -877,6 +954,12 @@ section {
 
 .work {
   background: linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+}
+
+.work__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.75rem;
 }
 
 .work__head {
@@ -1001,7 +1084,7 @@ section {
 
 .process {
   color: var(--paper);
-  background: var(--wine-deep);
+  background: var(--green-deep);
 }
 .process .eyebrow {
   color: var(--gilt-soft);
@@ -1180,7 +1263,7 @@ summary::-webkit-details-marker {
   display: none;
 }
 summary:hover {
-  color: var(--wine);
+  color: var(--green);
 }
 summary .plus {
   position: relative;
@@ -1204,7 +1287,7 @@ details[open] summary .plus::after {
   transform: rotate(0deg);
 }
 details[open] summary {
-  color: var(--wine);
+  color: var(--green);
 }
 .faq__a {
   padding-bottom: 1.6rem;
@@ -1266,7 +1349,7 @@ details[open] summary {
   background: var(--gilt-soft);
 }
 .contact .btn:hover {
-  --btn-fg: var(--wine-deep);
+  --btn-fg: var(--green-deep);
   box-shadow: 0 14px 30px -14px rgb(0 0 0 / 0.6);
 }
 .contact .btn--ghost {
@@ -1285,8 +1368,8 @@ details[open] summary {
 /* ---------- Footer ---------- */
 
 .footer {
-  background: var(--ink);
-  color: color-mix(in srgb, var(--paper) 72%, transparent);
+  background: var(--green);
+  color: color-mix(in srgb, var(--paper) 74%, transparent);
   padding-block: clamp(3.5rem, 7vw, 5.5rem) 2.5rem;
   font-size: 0.85rem;
 }
@@ -1302,13 +1385,11 @@ details[open] summary {
   }
 }
 .footer__brand {
-  font-family: var(--display);
-  font-size: clamp(2rem, 4.5vw, 3rem);
-  line-height: 1.05;
-  color: var(--paper);
+  line-height: 0;
 }
-.footer__brand .italic {
-  color: var(--gilt-soft);
+.footer__logo img {
+  width: clamp(15rem, 26vw, 20rem);
+  height: auto;
 }
 .footer__tag {
   margin-top: 1rem;

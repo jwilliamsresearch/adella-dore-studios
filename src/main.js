@@ -105,9 +105,69 @@ if ('IntersectionObserver' in window && sections.length) {
   sections.forEach((s) => spy.observe(s));
 }
 
+/* -------------------------------------------------------- hero cover set */
+// A slow crossfade through the cover photographs. It only ever touches
+// classes, so the server-rendered first frame is what shows without JS,
+// and reduced-motion visitors keep that single frame.
+const heroSlides = [...document.querySelectorAll('[data-hero-slides] .hero__slide')];
+const heroDots = [...document.querySelectorAll('.hero__dot')];
+
+if (heroSlides.length > 1) {
+  const HOLD = 6500;
+  let current = 0;
+  let timer = 0;
+
+  const show = (next) => {
+    if (next === current) return;
+    heroSlides[current].classList.remove('is-active');
+    heroSlides[current].setAttribute('aria-hidden', 'true');
+    heroSlides[next].classList.add('is-active');
+    heroSlides[next].removeAttribute('aria-hidden');
+    heroDots[current]?.classList.remove('is-active');
+    heroDots[current]?.setAttribute('aria-pressed', 'false');
+    heroDots[next]?.classList.add('is-active');
+    heroDots[next]?.setAttribute('aria-pressed', 'true');
+    current = next;
+  };
+
+  const queue = () => {
+    clearTimeout(timer);
+    // Paused while the tab is hidden, so a backgrounded page burns nothing.
+    if (reduced || document.hidden) return;
+    timer = setTimeout(() => {
+      show((current + 1) % heroSlides.length);
+      queue();
+    }, HOLD);
+  };
+
+  heroDots.forEach((dot, i) =>
+    dot.addEventListener('click', () => {
+      show(i);
+      queue();
+    })
+  );
+
+  document.addEventListener('visibilitychange', queue);
+
+  // The later frames are lazy in the markup; warm them once the first is in.
+  requestIdleCallbackShim(() => {
+    heroSlides.slice(1).forEach((slide) => {
+      const img = slide.querySelector('img');
+      if (img) img.loading = 'eager';
+    });
+  });
+
+  queue();
+}
+
+function requestIdleCallbackShim(fn) {
+  if ('requestIdleCallback' in window) window.requestIdleCallback(fn, { timeout: 2000 });
+  else setTimeout(fn, 900);
+}
+
 /* ------------------------------------------------------------ hero parallax */
 // A gentle drift on the hero photograph — skipped entirely when motion is reduced.
-const heroImg = document.querySelector('.hero__bg .media');
+const heroImg = document.querySelector('.hero__bg');
 if (heroImg && !reduced) {
   let raf = 0;
   window.addEventListener(

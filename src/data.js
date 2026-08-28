@@ -15,12 +15,41 @@ export const site = {
   url: 'https://www.adelladorestudios.com',
   handle: '@adelladorestudios',
   founded: '2022',
-  // The hero photograph + social card. Swap for any key in media-manifest.json.
-  cover: {
-    img: 'work-04',
-    // Framing for the full-bleed hero crop.
-    position: '52% 46%',
-    alt: 'A burgundy, cream and gold balloon garland arching over a cake table dressed with red roses, a gold arch mirror and a decorated celebration cake.',
+  // The hero runs as a slow crossfading set. The first entry is also the
+  // social card and the preloaded LCP image, so keep the strongest shot first.
+  covers: [
+    {
+      img: 'cover-1',
+      position: '50% 55%',
+      alt: 'A brick-and-beam Manchester venue laid for a wedding breakfast — long trestle tables, navy runners and chair sashes, eucalyptus garlands, candles and festoon lighting.',
+    },
+    {
+      img: 'cover-2',
+      position: '52% 50%',
+      alt: 'A bride seated with a cascading bouquet of white orchids and roses, her lace-edged cathedral veil fanned across the floor.',
+    },
+    {
+      img: 'cover-3',
+      position: '50% 50%',
+      alt: 'A brass candelabra with ivory tapers on a dressed dining table of white roses, gypsophila and blue menu cards against a deep green wall.',
+    },
+    {
+      img: 'cover-4',
+      position: '50% 45%',
+      alt: 'A ceremony aisle lined with eucalyptus, pillar candles and navy chair sashes, leading to a floral moon gate beneath hanging greenery.',
+    },
+    {
+      img: 'cover-5',
+      position: '50% 55%',
+      alt: 'A top table dressed with a white rose and eucalyptus garland, candles and a Mr & Mr sign, beside a floor-to-ceiling window over the city.',
+    },
+  ],
+  // Studio marks — both are artwork on the house green, so they sit on the
+  // green navbar and footer without a plate. `main` is the tall stacked
+  // lockup (studio section); `wordmark` is the horizontal one that fits a bar.
+  logos: {
+    main: 'main-logo',
+    wordmark: 'footer-logo',
   },
   socials: {
     instagram: 'https://www.instagram.com/adelladorestudios/',

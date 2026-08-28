@@ -9,7 +9,27 @@ import { site } from '../src/data.js';
 
 const SRC = 'public/media';
 const OUT = join(SRC, 'opt');
-const WIDTHS = [480, 800, 1200, 1600];
+const WIDTHS = [480, 800, 1200, 1600, 2000];
+
+// The house green, matching --green in styles.css. Both logo lockups arrive as
+// artwork on a flat field of *nearly* this colour; on a green navbar or plate a
+// few points of drift shows up as a visible seam, so each one is pulled onto
+// the exact token before anything else happens to it.
+const HOUSE_GREEN = [0x4c, 0x63, 0x55];
+
+/** Trims a logo's flat margin, then maps its field exactly onto HOUSE_GREEN. */
+async function normaliseLogo(pipeline) {
+  const trimmed = await pipeline.trim({ threshold: 6 }).toBuffer();
+  // Top-left pixel is the field colour — the trim leaves the artwork inset.
+  const { data } = await sharp(trimmed).extract({ left: 0, top: 0, width: 1, height: 1 }).raw().toBuffer({ resolveWithObject: true });
+
+  // A per-channel linear map that sends the field to the token and holds 255
+  // fixed, so the cream lettering and its antialiasing come through untouched.
+  const a = HOUSE_GREEN.map((t, i) => (255 - t) / (255 - data[i]));
+  const b = HOUSE_GREEN.map((t, i) => t - a[i] * data[i]);
+
+  return sharp(trimmed).linear(a, b).toBuffer();
+}
 
 await mkdir(OUT, { recursive: true });
 
@@ -20,15 +40,24 @@ const manifest = {};
 for (const file of files) {
   const { name } = parse(file);
   const input = join(SRC, file);
-  const image = sharp(input).rotate();
+  // Logo lockups arrive with a wide flat margin baked in. Trimming it back to
+  // the artwork lets them scale to a real size in a slim navbar — the green
+  // field around them is then the navbar/footer itself.
+  const isLogo = name.endsWith('-logo');
+  const base = sharp(input).rotate();
+  const image = isLogo ? sharp(await normaliseLogo(base)) : base;
   const { width, height } = await image.metadata();
 
   const widths = WIDTHS.filter((w) => w <= width);
   if (!widths.includes(width) && widths.length === 0) widths.push(width);
 
+  // Flat colour with hairline strokes needs more bits than a photograph
+  // before the fine script starts to smear.
+  const q = isLogo ? { webp: 94, avif: 80 } : { webp: 78, avif: 55 };
+
   for (const w of widths) {
-    await image.clone().resize({ width: w }).webp({ quality: 78 }).toFile(join(OUT, `${name}-${w}.webp`));
-    await image.clone().resize({ width: w }).avif({ quality: 55 }).toFile(join(OUT, `${name}-${w}.avif`));
+    await image.clone().resize({ width: w }).webp({ quality: q.webp }).toFile(join(OUT, `${name}-${w}.webp`));
+    await image.clone().resize({ width: w }).avif({ quality: q.avif }).toFile(join(OUT, `${name}-${w}.avif`));
   }
 
   // Low-quality image placeholder, inlined so nothing ever flashes empty.
@@ -44,8 +73,10 @@ for (const file of files) {
   console.log(`✓ ${name} (${width}×${height}) → ${widths.join(', ')}`);
 }
 
-// Social card: 1200×630 crop of the configured cover shot.
-await sharp(join(SRC, `${site.cover.img}.jpg`))
+// Social card: 1200×630 crop of the first cover shot, whatever its extension.
+const coverFile = files.find((f) => parse(f).name === site.covers[0].img);
+if (!coverFile) throw new Error(`Cover source not found for ${site.covers[0].img}`);
+await sharp(join(SRC, coverFile))
   .resize(1200, 630, { fit: 'cover', position: 'attention' })
   .jpeg({ quality: 82 })
   .toFile(join(SRC, 'og-cover.jpg'));

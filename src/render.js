@@ -39,6 +39,22 @@ function picture(name, { alt, sizes, priority = false, className = '' } = {}) {
       </div>`;
 }
 
+/** A logo lockup: same responsive sources, but never cropped and no LQIP wrapper. */
+function logo(name, { alt, sizes, className = '', priority = false } = {}) {
+  const m = manifest[name];
+  if (!m) throw new Error(`Unknown image: ${name}`);
+  const srcset = (ext) => m.widths.map((w) => `/media/opt/${name}-${w}.${ext} ${w}w`).join(', ');
+  const fallbackW = m.widths[m.widths.length - 1];
+
+  return `<picture class="logo ${className}">
+          <source type="image/avif" srcset="${srcset('avif')}" sizes="${sizes}">
+          <source type="image/webp" srcset="${srcset('webp')}" sizes="${sizes}">
+          <img src="/media/opt/${name}-${fallbackW}.webp" width="${m.width}" height="${m.height}"
+               alt="${esc(alt)}" sizes="${sizes}"
+               ${priority ? 'fetchpriority="high" decoding="sync"' : 'loading="lazy" decoding="async"'}>
+        </picture>`;
+}
+
 const ARROW = '<svg class="arrow" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M1 12L12 1M12 1H4M12 1V9" stroke="currentColor" stroke-width="1.2"/></svg>';
 
 const ICONS = {
@@ -68,8 +84,12 @@ function header() {
   return `<header class="header" id="header">
     <div class="shell header__inner">
       <a class="brand" href="#top" aria-label="${esc(site.name)} — home">
-        <span class="brand__mark">Adell Adore</span>
-        <span class="brand__sub">Studios</span>
+        ${logo(site.logos.wordmark, {
+          alt: `${site.name} — ${site.tagline}`,
+          sizes: '(max-width: 700px) 150px, 200px',
+          className: 'brand__logo',
+          priority: true,
+        })}
       </a>
       <nav class="nav nav--desktop" aria-label="Primary">${nav}</nav>
       <a class="btn header__cta" href="#contact">Enquire ${ARROW}</a>
@@ -91,13 +111,33 @@ function header() {
 }
 
 function hero() {
-  const { img, alt, position } = site.cover;
-  return `<section class="hero" id="top" style="--cover-pos:${position}">
-    <div class="hero__bg">
-      ${picture(img, { alt, sizes: '100vw', priority: true })}
+  const covers = site.covers;
+
+  // Every frame ships in the HTML; only the first is eager. JS promotes the
+  // rest — with no JS the first photograph simply stays put.
+  const slides = covers
+    .map(
+      (c, i) => `<div class="hero__slide${i === 0 ? ' is-active' : ''}" data-slide="${i}"
+             style="--cover-pos:${c.position}" ${i === 0 ? '' : 'aria-hidden="true"'}>
+          ${picture(c.img, { alt: i === 0 ? c.alt : '', sizes: '100vw', priority: i === 0 })}
+        </div>`
+    )
+    .join('\n      ');
+
+  const dots = covers
+    .map(
+      (c, i) =>
+        `<button type="button" class="hero__dot${i === 0 ? ' is-active' : ''}" data-dot="${i}"
+            aria-label="Show cover photograph ${i + 1} of ${covers.length}"
+            aria-pressed="${i === 0 ? 'true' : 'false'}"><span></span></button>`
+    )
+    .join('');
+
+  return `<section class="hero" id="top">
+    <div class="hero__bg" data-hero-slides>
+      ${slides}
     </div>
     <div class="shell hero__inner">
-      <p class="eyebrow hero__fade" style="--i:0">${esc(site.city)} &middot; Wedding &amp; Event Design</p>
       <h1 class="display hero__title">
         <span class="reveal-line"><span style="--i:0">Crafting</span></span>
         <span class="reveal-line"><span style="--i:1">moments,</span></span>
@@ -114,6 +154,7 @@ function hero() {
           <a class="btn btn--ghost" href="#work">View the work</a>
         </div>
       </div>
+      <div class="hero__dots hero__fade" style="--i:3" role="group" aria-label="Cover photographs">${dots}</div>
     </div>
     <span class="scroll-cue" aria-hidden="true">Scroll</span>
   </section>`;
@@ -153,6 +194,11 @@ function intro() {
       <div data-reveal>
         <p class="eyebrow">The studio</p>
         <h2 class="h2" style="margin-top:1.5rem">A room that feels<br><span class="italic">inevitable.</span></h2>
+        ${logo(site.logos.main, {
+          alt: `${site.name} — ${site.tagline}`,
+          sizes: '(max-width: 900px) 180px, 260px',
+          className: 'intro__mark',
+        })}
       </div>
       <div class="intro__body" data-reveal style="--d:0.1s">
         <p class="lede">
@@ -234,7 +280,10 @@ function workBlock() {
           <p class="eyebrow">Selected work</p>
           <h2 class="h2" style="margin-top:1.5rem">Rooms we have <span class="italic">built.</span></h2>
         </div>
-        <a class="tlink" href="${site.socials.tiktok}" target="_blank" rel="noopener">See it all on TikTok</a>
+        <div class="work__links">
+          <a class="tlink" href="${site.socials.tiktok}" target="_blank" rel="noopener">See it all on TikTok</a>
+          <a class="tlink" href="${site.socials.instagram}" target="_blank" rel="noopener">See it all on Instagram</a>
+        </div>
       </div>
       <div class="gallery">${cards}</div>
       <p class="sr-only">${items.length + 1} projects, each linking to the full film on TikTok.</p>
@@ -361,7 +410,13 @@ function footer() {
     <div class="shell">
       <div class="footer__top">
         <div>
-          <div class="footer__brand">Adell Adore<br><span class="italic">Studios</span></div>
+          <div class="footer__brand">
+            ${logo(site.logos.wordmark, {
+              alt: `${site.name}`,
+              sizes: '(max-width: 780px) 260px, 320px',
+              className: 'footer__logo',
+            })}
+          </div>
           <p class="footer__tag">${esc(site.tagline)} — wedding and event design in ${esc(site.city)}, ${esc(site.country)}.</p>
         </div>
         <div>
@@ -481,8 +536,9 @@ export function renderHead() {
   const title = `${site.name} — Wedding & Event Design in ${site.city}`;
   const desc = `Luxury wedding and event design studio in ${site.city}. Adell Adore Studios designs and styles weddings, baby showers, birthdays and private events from concept to execution. Crafting moments, creating memories.`;
   const og = `${site.url}/media/og-cover.jpg`;
-  const coverW = manifest[site.cover.img].widths.at(-1);
-  const preloadHref = `/media/opt/${site.cover.img}-${coverW}.avif`;
+  const lead = site.covers[0];
+  const coverW = manifest[lead.img].widths.at(-1);
+  const preloadHref = `/media/opt/${lead.img}-${coverW}.avif`;
 
   return `
   <title>${esc(title)}</title>
@@ -490,8 +546,7 @@ export function renderHead() {
   <link rel="canonical" href="${site.url}/">
   <meta name="author" content="${esc(site.name)}">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-  <meta name="theme-color" content="#fbf7f1" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#3d1219" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#4c6355">
   <meta name="geo.region" content="GB-MAN">
   <meta name="geo.placename" content="${esc(site.city)}">
 
@@ -504,7 +559,7 @@ export function renderHead() {
   <meta property="og:image" content="${og}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="${esc(site.cover.alt)}">
+  <meta property="og:image:alt" content="${esc(lead.alt)}">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${esc(title)}">
